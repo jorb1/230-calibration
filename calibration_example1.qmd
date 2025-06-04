@@ -60,7 +60,7 @@ One option
 best_par2 = which.max(results$low_month_cor)
 
 # is it the same as what we got with nse
-
+best_par2
 ```
 
 Lets keep all parameters that give reasonable values
@@ -69,19 +69,27 @@ Lets keep all parameters that give reasonable values
 
 # first we need to be able to identify parameter sets in results
 
-ID = msage %>% select(-date, -month, -day, -year, -wy, -obs ) %>%  colnames()
+ID = msage %>% select(-date, -month, -day, -year, -wy, -obs ) %>%  
+  colnames()
 results$id = ID
 
 # now we can pick only good parameters
-accept_par = subset(results, annual_min_cor > 0.7 & low_month_cor > 0.7 & abs(annual_min_err < 0.2) & abs(low_month_err) < 5)
+accept_par = subset(results, annual_min_cor > 0.7 & 
+                      low_month_cor > 0.7 & 
+                      abs(annual_min_err < 0.2) & 
+                      abs(low_month_err) < 5)
 nrow(accept_par)
 
 #  plot these to compare with all parameters
 msagel$accept = ifelse(msagel$run %in% accept_par$id, TRUE, FALSE)
-ggplot(subset(msagel, accept), aes(as.Date(date), str))+geom_line()
+ggplot(subset(msagel, accept), aes(as.Date(date), str)) +
+  geom_line()
 
 # or with observed but focus on August flow
-msagel_mth = msagel %>% select(-date,-day) %>%  group_by(month, wy, run, accept) %>% summarise(str=mean(str, na.rm=T), obs=mean(obs, na.rm=T))
+msagel_mth = msagel %>% 
+  select(-date,-day) %>%  
+  group_by(month, wy, run, accept) %>% 
+  summarise(str=mean(str, na.rm=T), obs=mean(obs, na.rm=T))
 
 # just august flow
 ggplot(subset(msagel_mth,  month==8 & accept),

@@ -7,7 +7,7 @@
 #' @param  day day
 #' @param  year year
 #' @param high_flow_months which to use default (May)
-#' @return annual_min_err, annual_min_corr, low_month_cor, low_month_err
+#' @return annual_min_err, annual_min_corr, high_month_cor, high_month_err
 
 compute_highflowmetrics <- function(m, o, month, day, year, wy, high_flow_months = 5) {
   flow <- cbind.data.frame(m, o, month, day, year, wy)

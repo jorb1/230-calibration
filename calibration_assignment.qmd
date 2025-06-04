@@ -38,7 +38,10 @@ colnames(results)=c("annual_max_err","annual_max_cor", "high_month_err",
 # interesting to look at range of metrics - could use this to decide on
 # acceptable values
 summary(results)
+```
 
+
+```{r, echo=TRUE, eval=TRUE}
 # graph range of performance measures
 resultsl = results %>% 
   gather(key="metric",value="value")
@@ -65,11 +68,6 @@ best_par2
 ```
 
 
-```{r}
-head(results)
-```
-
-
 Lets keep all parameters that give reasonable values
 
 ```{r, echo=TRUE, eval=TRUE}
@@ -85,14 +83,15 @@ results$id = ID
 accept_par = subset(results, 
                     annual_max_cor > 0.7 & 
                     high_month_cor > 0.7 &
-                    abs(annual_max_err < 0.2) & 
-                    abs(high_month_err) < 5)
+                    abs(annual_max_err < 11) & 
+                    abs(high_month_err) < 54)
 nrow(accept_par)
 
 #  plot these to compare with all parameters
 msagel$accept = ifelse(msagel$run %in% accept_par$id, TRUE, FALSE)
 ggplot(subset(msagel, accept), aes(as.Date(date), str)) +
-  geom_line()
+  geom_line() +
+  theme_bw()
 
 # or with observed but focus on May flow
 msagel_mth = msagel %>% 
@@ -105,11 +104,13 @@ ggplot(subset(msagel_mth,  month==5 & accept),
        aes(wy, str, group=wy)) +
   geom_boxplot(position="dodge") +
   geom_point(aes(wy, obs), col="red") +
-  labs(y="Streamflow", x="Date")
+  labs(y="Streamflow", x="Date") + 
+  theme_bw()
 
 mean_may_obs = mean(subset(msagel_mth, month==5)$obs) 
 ggplot(subset(msagel_mth, month==5), aes(accept, str))+
   geom_boxplot()+
   geom_hline(yintercept=mean_may_obs, col="red")+
-  labs(y="Streamflow", x="Date")
+  labs(y="Streamflow", x="Date") + 
+  theme_bw()
 ```
